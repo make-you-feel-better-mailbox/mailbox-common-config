@@ -1,7 +1,5 @@
 package onetwo.mailboxcommonconfig.common.jwt;
 
-import onetwo.mailboxcommonconfig.common.domain.RoleNames;
-import onetwo.mailboxcommonconfig.common.exceptions.TokenValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -9,6 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import onetwo.mailboxcommonconfig.common.domain.RoleNames;
+import onetwo.mailboxcommonconfig.common.exceptions.TokenValidationException;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,9 +24,11 @@ import java.util.Set;
 public class JwtTokenProvider implements TokenProvider {
 
     private final String secretKey;
+    private final Environment environment;
 
-    public JwtTokenProvider(String secretKey) {
-        this.secretKey = secretKey;
+    public JwtTokenProvider(Environment environment) {
+        this.environment = environment;
+        this.secretKey = environment.getProperty("jwt.secret-key");
     }
 
     private Key key;

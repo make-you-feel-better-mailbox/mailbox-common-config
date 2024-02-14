@@ -1,13 +1,13 @@
 package onetwo.mailboxcommonconfig.common.filter;
 
-import onetwo.mailboxcommonconfig.common.GlobalStatus;
-import onetwo.mailboxcommonconfig.common.exceptions.BadRequestException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import onetwo.mailboxcommonconfig.common.GlobalStatus;
+import onetwo.mailboxcommonconfig.common.exceptions.BadRequestException;
+import org.springframework.core.env.Environment;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -15,11 +15,17 @@ import java.io.IOException;
 @Slf4j
 public class AccessKeyCheckFilter extends OncePerRequestFilter {
 
-    @Value("${access-id}")
+    private final Environment environment;
+
     private String accessId;
 
-    @Value("${access-key}")
     private String accessKey;
+
+    public AccessKeyCheckFilter(Environment environment) {
+        this.environment = environment;
+        this.accessId = environment.getProperty(GlobalStatus.ACCESS_ID);
+        this.accessKey = environment.getProperty(GlobalStatus.ACCESS_KEY);
+    }
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
