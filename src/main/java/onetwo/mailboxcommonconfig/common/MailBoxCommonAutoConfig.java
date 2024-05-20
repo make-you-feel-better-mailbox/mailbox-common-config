@@ -60,8 +60,8 @@ public class MailBoxCommonAutoConfig {
     }
 
     @Bean
-    public FilterConfigure filterConfigure(TokenProvider tokenProvider, Environment environment) {
-        return new FilterConfigure(jwtTokenFilter(tokenProvider), accessKeyCheckFilter(environment), loggingFilter());
+    public FilterConfigure filterConfigure(JwtTokenFilter jwtTokenFilter, AccessKeyCheckFilter accessKeyCheckFilter, LoggingFilter loggingFilter) {
+        return new FilterConfigure(jwtTokenFilter, accessKeyCheckFilter, loggingFilter);
     }
 
     @Bean
@@ -82,7 +82,7 @@ public class MailBoxCommonAutoConfig {
 
     @Bean
     @ConditionalOnProperty(name = SECURITY_PROPERTY, havingValue = GlobalStatus.HAVING_VALUE_ON)
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, TokenProvider tokenProvider, Environment environment, MvcRequestMatcher.Builder mvc, RequestMatcher requestMatcher) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, TokenProvider tokenProvider, Environment environment, MvcRequestMatcher.Builder mvc, RequestMatcher requestMatcher, FilterConfigure filterConfigure) throws Exception {
         List<MvcRequestMatcher> requestMatchers = Stream.of(WHITE_LIST).map(mvc::pattern).collect(Collectors.toList());
 
         if (requestMatcher != null) requestMatchers.addAll(requestMatcher.getMvcRequestMatcherArray());
@@ -105,7 +105,7 @@ public class MailBoxCommonAutoConfig {
                                 .requestMatchers(requestMatchers.toArray(MvcRequestMatcher[]::new)).permitAll()
                                 .anyRequest().authenticated()
                 )
-                .apply(filterConfigure(tokenProvider, environment));
+                .apply(filterConfigure);
 
         return httpSecurity.build();
     }
