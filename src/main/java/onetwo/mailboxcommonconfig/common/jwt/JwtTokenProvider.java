@@ -44,12 +44,12 @@ public class JwtTokenProvider implements TokenProvider {
         Claims claims = getClaimsByToken(token);
         String userId = claims.getSubject();
 
-        Set<GrantedAuthority> authorities = getGrantedAuthoritiesByUserId(userId);
+        Set<GrantedAuthority> authorities = getGrantedAuthoritiesByUserId();
 
         return new UsernamePasswordAuthenticationToken(userId, token, authorities);
     }
 
-    private Set<GrantedAuthority> getGrantedAuthoritiesByUserId(String userId) {
+    private Set<GrantedAuthority> getGrantedAuthoritiesByUserId() {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(RoleNames.ROLE_USER.getValue()));
         return authorities;

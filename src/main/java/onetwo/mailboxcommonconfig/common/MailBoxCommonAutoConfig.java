@@ -18,6 +18,7 @@ import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,7 +61,7 @@ public class MailBoxCommonAutoConfig {
     }
 
     @Bean
-    public FilterConfigure filterConfigure(JwtTokenFilter jwtTokenFilter, AccessKeyCheckFilter accessKeyCheckFilter, LoggingFilter loggingFilter) {
+    public FilterConfigure filterConfigure(JwtTokenFilter jwtTokenFilter, Optional<AccessKeyCheckFilter> accessKeyCheckFilter, LoggingFilter loggingFilter) {
         return new FilterConfigure(jwtTokenFilter, accessKeyCheckFilter, loggingFilter);
     }
 
@@ -82,7 +83,7 @@ public class MailBoxCommonAutoConfig {
 
     @Bean
     @ConditionalOnProperty(name = SECURITY_PROPERTY, havingValue = GlobalStatus.HAVING_VALUE_ON)
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, TokenProvider tokenProvider, Environment environment, MvcRequestMatcher.Builder mvc, RequestMatcher requestMatcher, FilterConfigure filterConfigure) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, MvcRequestMatcher.Builder mvc, RequestMatcher requestMatcher, FilterConfigure filterConfigure) throws Exception {
         List<MvcRequestMatcher> requestMatchers = Stream.of(WHITE_LIST).map(mvc::pattern).collect(Collectors.toList());
 
         if (requestMatcher != null) requestMatchers.addAll(requestMatcher.getMvcRequestMatcherArray());
