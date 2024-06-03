@@ -72,7 +72,7 @@ public class MailBoxCommonAutoConfig {
     }
 
     public static final String[] WHITE_LIST = {
-            "/favicon.ico", "/docs/**", "/h2-console"
+            "/favicon.ico", "/docs/**", "/h2-console/**", "/h2-console"
     };
 
     @Bean
