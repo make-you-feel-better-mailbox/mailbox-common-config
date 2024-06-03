@@ -71,8 +71,8 @@ public class MailBoxCommonAutoConfig {
         return new JwtAuthenticationEntryPoint();
     }
 
-    private static final String[] WHITE_LIST = {
-            "/favicon.ico", "/docs/**"
+    public static final String[] WHITE_LIST = {
+            "/favicon.ico", "/docs/**", "/h2-console"
     };
 
     @Bean

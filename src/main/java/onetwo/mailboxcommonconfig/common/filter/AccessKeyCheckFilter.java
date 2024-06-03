@@ -6,11 +6,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import onetwo.mailboxcommonconfig.common.GlobalStatus;
+import onetwo.mailboxcommonconfig.common.MailBoxCommonAutoConfig;
 import onetwo.mailboxcommonconfig.common.exceptions.BadRequestException;
 import org.springframework.core.env.Environment;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 public class AccessKeyCheckFilter extends OncePerRequestFilter {
@@ -32,7 +34,9 @@ public class AccessKeyCheckFilter extends OncePerRequestFilter {
         String requestAccessId = request.getHeader(GlobalStatus.ACCESS_ID);
         String requestAccessKey = request.getHeader(GlobalStatus.ACCESS_KEY);
 
-        if (!request.getRequestURI().contains("/h2-console") && (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey)))
+        boolean hasWhiteList = Arrays.stream(MailBoxCommonAutoConfig.WHITE_LIST).anyMatch(e -> request.getRequestURI().contains(e));
+
+        if (!hasWhiteList && (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey)))
             throw new BadRequestException("access-id or access-key does not matches");
 
         log.info("Server Access-id and Access-Key check passed");
