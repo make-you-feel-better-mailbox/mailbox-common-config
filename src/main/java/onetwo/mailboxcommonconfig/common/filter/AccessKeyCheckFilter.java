@@ -32,7 +32,7 @@ public class AccessKeyCheckFilter extends OncePerRequestFilter {
         String requestAccessId = request.getHeader(GlobalStatus.ACCESS_ID);
         String requestAccessKey = request.getHeader(GlobalStatus.ACCESS_KEY);
 
-        if (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey))
+        if (!request.getRequestURI().contains("/h2-console") && (!accessId.equals(requestAccessId) || !accessKey.equals(requestAccessKey)))
             throw new BadRequestException("access-id or access-key does not matches");
 
         log.info("Server Access-id and Access-Key check passed");
